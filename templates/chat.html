@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Sync Chat{% endblock %}
+
+{% block content %}
+<div class="chat-container" data-current-user-id="{{ session.user_id }}">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('logout') }}">Logout</a>
+            <h2>Welcome, {{ session.username }}</h2>
+        </div>
+        <h3>Users</h3>
+        <input type="text" id="user-search" placeholder="Search for a user...">
+        <ul class="user-list">
+            {% for user in all_users %}
+                <li class="user-list-item" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
+                    {{ user.username }}
+                    {% if unread_counts[user.id] > 0 %}
+                        <span class="unread-count">{{ unread_counts[user.id] }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="chat-window">
+        <div class="chat-header">
+            <h2 id="chat-with-username">Select a user to start chatting</h2>
+        </div>
+        <div class="messages" id="messages-container"></div>
+        <form class="message-input-form" id="message-form" style="display: none;">
+            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+            <button type="submit" id="send-button">Send</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}
